@@ -11,6 +11,7 @@ struct Menu: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     @State private var searchText = ""
+    @State private var selectedCategory = "all"
     
     var body: some View {
         VStack {
@@ -19,6 +20,31 @@ struct Menu: View {
             Text("Little Lemon is a local mediterranean restaurant")
             TextField("Search menu", text: $searchText)
                 .padding(.all, 20)
+            
+            FetchedObjects(predicate: NSPredicate(value: true)) { (dishes: [Dish]) in
+                ScrollView(.horizontal,showsIndicators: false) {
+                    HStack(spacing: 15) {
+                        let categories = ["all"] + Array(Set(dishes.map { $0.category ?? "" })).sorted(by: <)
+                        ForEach(categories, id: \.self) { category in
+                            VStack(spacing: 0.0) {
+                                Text(category.capitalized)
+                                    .foregroundColor(selectedCategory == category ? .black : .gray)
+                                    .padding(.horizontal, 16)
+                                    .onTapGesture {
+                                        selectedCategory = category
+                                    }
+                                if selectedCategory == category {
+                                    Rectangle()
+                                        .frame(height: 2.0)
+                                        .foregroundColor(.orange)
+                                }
+                            }
+                        }
+                    }
+                    .padding(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+                }
+            }
+            
             FetchedObjects(predicate: buildPredicate(), sortDescriptors: buildSortDescriptors()) { (dishes: [Dish]) in
                 List {
                     ForEach(dishes) { dish in
@@ -72,7 +98,9 @@ struct Menu: View {
     
     func buildPredicate() -> NSPredicate {
         let cleanText = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        return cleanText.isEmpty ? NSPredicate(value: true) : NSPredicate(format: "title CONTAINS[cd] %@", cleanText)
+        let filterMenuPredicate = selectedCategory == "all" ? NSPredicate(value: true) : NSPredicate(format: "category == %@", selectedCategory)
+        let filterPredicate = cleanText.isEmpty ? NSPredicate(value: true) : NSPredicate(format: "title CONTAINS[cd] %@", cleanText)
+        return NSCompoundPredicate(type: .and, subpredicates: [filterMenuPredicate, filterPredicate])
     }
 }
 

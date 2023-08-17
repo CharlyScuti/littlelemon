@@ -26,13 +26,16 @@ struct Onboarding: View {
                 NavigationLink(destination: Home(), isActive: $isLoggedIn) {
                     EmptyView()
                 }
+                Image("Logo")
+                    .frame(width: 100)
+                    .padding(.bottom, 20)
                 TextField("First name", text: $firstName)
                     .textFieldStyle(.roundedBorder)
                 TextField("Last name", text: $lastName)
                     .textFieldStyle(.roundedBorder)
                 TextField("Email", text: $email)
                     .textFieldStyle(.roundedBorder)
-                Button("Register") {
+                Button {
                     if firstName.isEmpty || lastName.isEmpty || email.isEmpty {
                         showingAlert = true
                         return
@@ -42,7 +45,12 @@ struct Onboarding: View {
                     UserDefaults.standard.set(email, forKey: kEmail)
                     UserDefaults.standard.set(true, forKey: kIsLoggedIn)
                     isLoggedIn = true
+                } label: {
+                    Text("Register")
+                        .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(GrowingButton())
+                .padding(.top, 20)
                 .alert("Plase fill all data", isPresented: $showingAlert) {
                     Button("OK", role: .cancel) { }
                 }
