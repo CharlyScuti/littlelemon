@@ -10,6 +10,7 @@ import SwiftUI
 struct Home: View {
     
     let persistence = PersistenceController.shared
+    @Binding var path: NavigationPath
     
     var body: some View {
         VStack {
@@ -21,7 +22,9 @@ struct Home: View {
                 Spacer()
                 Image("Logo")
                 Spacer()
-                NavigationLink(destination: UserProfile()) {
+                Button {
+                    path.append("profile")
+                } label: {
                     Image("profile-image-placeholder")
                         .resizable()
                         .frame(width: 50.0, height: 50.0)
@@ -38,6 +41,7 @@ struct Home: View {
 
 struct Home_Previews: PreviewProvider {
     static var previews: some View {
-        Home()
+        @State var path = NavigationPath()
+        Home(path: $path)
     }
 }

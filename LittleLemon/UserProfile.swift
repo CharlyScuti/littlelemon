@@ -13,6 +13,7 @@ struct UserProfile: View {
     private let lastName = UserDefaults.standard.string(forKey: kLastName) ?? ""
     private let email = UserDefaults.standard.string(forKey: kEmail) ?? ""
     @Environment(\.presentationMode) var presentation
+    @Binding var path: NavigationPath
     
     var body: some View {
         VStack {
@@ -28,7 +29,7 @@ struct UserProfile: View {
                 .font(.headline)
             Button {
                 UserDefaults.standard.set(false, forKey: kIsLoggedIn)
-                self.presentation.wrappedValue.dismiss()
+                path = NavigationPath(["login"])
             } label: {
                 Text("Logout")
                     .frame(maxWidth: .infinity)
@@ -40,6 +41,7 @@ struct UserProfile: View {
 
 struct UserProfile_Previews: PreviewProvider {
     static var previews: some View {
-        UserProfile()
+        @State var path = NavigationPath()
+        UserProfile(path: $path)
     }
 }
