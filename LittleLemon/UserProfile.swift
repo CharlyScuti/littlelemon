@@ -17,16 +17,24 @@ struct UserProfile: View {
     var body: some View {
         VStack {
             Text("Personal information")
+                .font(.title)
             Image("profile-image-placeholder")
-            Text(firstName)
-            Text(lastName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 200, height: 200)
+            Text("\(firstName) \(lastName)")
+                .font(.title3)
             Text(email)
-            Button("Logout") {
+                .font(.headline)
+            Button {
                 UserDefaults.standard.set(false, forKey: kIsLoggedIn)
                 self.presentation.wrappedValue.dismiss()
+            } label: {
+                Text("Logout")
+                    .frame(maxWidth: .infinity)
             }
-            Spacer()
-        }
+            .buttonStyle(GrowingButton())
+        }.padding(.horizontal, 20)
     }
 }
 

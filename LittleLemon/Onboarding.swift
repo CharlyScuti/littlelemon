@@ -21,13 +21,9 @@ struct Onboarding: View {
     @State private var isLoggedIn = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
-                NavigationLink(destination: Home(), isActive: $isLoggedIn) {
-                    EmptyView()
-                }
                 Image("Logo")
-                    .frame(width: 100)
                     .padding(.bottom, 20)
                 TextField("First name", text: $firstName)
                     .textFieldStyle(.roundedBorder)
@@ -60,6 +56,9 @@ struct Onboarding: View {
                 if UserDefaults.standard.bool(forKey: kIsLoggedIn) {
                     isLoggedIn = true
                 }
+            }
+            .navigationDestination(isPresented: $isLoggedIn) {
+                Home()
             }
         }
     }

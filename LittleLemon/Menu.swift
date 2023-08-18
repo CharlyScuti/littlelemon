@@ -15,11 +15,39 @@ struct Menu: View {
     
     var body: some View {
         VStack {
-            Text("Little Lemon")
-            Text("Chicago")
-            Text("Little Lemon is a local mediterranean restaurant")
-            TextField("Search menu", text: $searchText)
-                .padding(.all, 20)
+            VStack {
+                Text("Little Lemon")
+                    .foregroundColor(Color.primary)
+                    .font(.largeTitle.weight(.bold))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(alignment: .top) {
+                    VStack {
+                        Text("Chicago")
+                            .foregroundColor(Color.onSecondary)
+                            .font(Font.title.weight(.medium))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text("We are a family owned Mediterranean restaurant, focus on traditional recipes served with a modern twist.")
+                            .foregroundColor(Color.onSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 5)
+                    }
+                    Spacer()
+                    Image("Hero image")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 100, height: 150.0)
+                        .cornerRadius(8)
+                        .clipped()
+                }
+                TextField("Search menu", text: $searchText)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(maxWidth: .infinity)
+                    .background(Color.onSecondary)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+            .background(Color.secondary)
             
             FetchedObjects(predicate: NSPredicate(value: true)) { (dishes: [Dish]) in
                 ScrollView(.horizontal,showsIndicators: false) {
@@ -41,7 +69,7 @@ struct Menu: View {
                             }
                         }
                     }
-                    .padding(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+                    .padding(EdgeInsets(top: 10, leading: 20, bottom: 20, trailing: 20))
                 }
             }
             
@@ -49,7 +77,16 @@ struct Menu: View {
                 List {
                     ForEach(dishes) { dish in
                         HStack {
-                            Text("\((dish.title ?? "")) \(dish.price ?? "")")
+                            VStack(alignment: .leading) {
+                                Text(dish.title ?? "")
+                                    .font(.title3.weight(.semibold))
+                                Text(dish.dishDescription ?? "")
+                                    .font(.body.weight(.thin))
+                                    .padding(.vertical, 5)
+                                Text("$\(dish.price ?? "")")
+                                    .font(.body.weight(.medium))
+                            }
+                            Spacer(minLength: 10)
                             AsyncImage(url: URL(string: dish.image ?? "")) { image in
                                 image
                                     .resizable()
@@ -83,6 +120,7 @@ struct Menu: View {
                     dish.image = $0.image
                     dish.price = $0.price
                     dish.category = $0.category
+                    dish.dishDescription = $0.description
                 }
                 try? viewContext.save()
             }

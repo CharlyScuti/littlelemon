@@ -12,15 +12,27 @@ struct Home: View {
     let persistence = PersistenceController.shared
     
     var body: some View {
-        TabView {
-            Menu().tabItem {
-                Label("Menu", systemImage: "list.dash")
+        VStack {
+            HStack {
+                Rectangle()
+                    .frame(width: 50.0, height: 50.0)
+                    .foregroundColor(.clear)
+                    .padding(.leading, 20)
+                Spacer()
+                Image("Logo")
+                Spacer()
+                NavigationLink(destination: UserProfile()) {
+                    Image("profile-image-placeholder")
+                        .resizable()
+                        .frame(width: 50.0, height: 50.0)
+                }
+                .padding(.trailing, 20)
             }
-            .environment(\.managedObjectContext, persistence.container.viewContext)
-            UserProfile().tabItem {
-                Label("Profile", systemImage: "square.and.pencil")
-            }
-        }.navigationBarBackButtonHidden(true)
+            .frame(maxWidth: .infinity)
+            Menu()
+                .environment(\.managedObjectContext, persistence.container.viewContext)
+        }
+        .navigationBarBackButtonHidden(true)
     }
 }
 

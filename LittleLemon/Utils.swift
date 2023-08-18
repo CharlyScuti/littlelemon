@@ -24,4 +24,5 @@ extension Color {
     static let primary = Color(red: 0.95, green: 0.8, blue: 0.07)
     static let secondary = Color(red: 0.28, green: 0.36, blue: 0.34)
     static let onPrimary = Color.black
+    static let onSecondary = Color.white
 }
